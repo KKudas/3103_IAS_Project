@@ -31,11 +31,19 @@ const orderServiceProxy = createProxyMiddleware({
   secure: false,
 });
 
+const oauth2ServiceProxy = createProxyMiddleware({
+  target: "https://localhost:3004", // URL of the provider service
+  changeOrigin: true,
+  secure: false,
+});
+
 // Routes
 app.use("/products", productServiceProxy);
 app.use("/orders", orderServiceProxy);
 app.use("/users", userServiceProxy);
+app.use("/auth", oauth2ServiceProxy);
 
 https.createServer(options, app).listen(8080, () => {
   console.log("gateway started on port 8080");
 });
+
