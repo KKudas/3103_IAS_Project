@@ -70,7 +70,10 @@ const validateUserParams = () => {
       .isString()
       .withMessage("Role must be a string")
       .trim()
-      .escape(),
+      .escape()
+      .custom((value) => {
+        return value.toLowerString();
+      }),
   ];
 };
 
