@@ -1,70 +1,68 @@
-const productService = require('../product-service'); // Adjust path if necessary
+const { Sequelize, DataTypes } = require("sequelize");
+const sequelize = require("./db");
 
-// Mock inventory data
-let inventory = [
-  { productId: 1, quantity: 100 },
-  { productId: 2, quantity: 50 },
-  { productId: 3, quantity: 200 },
-];
+// Define the User model
+const Inventory = sequelize.define(
+  "Inventory",
+  {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    price: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
 
-// Get all inventory items
-const getInventory = () => {
-  return inventory.map((item) => {
-    const product = productService.getProductById(item.productId); // Get product details
-    return {
-      ...item,
-      productDetails: product || { name: 'Product not found', price: 0 },
-    };
+sequelize.sync({ force: false }).then(() => {
+  console.log("Inventory table created or already exists");
+
+  // Dummy data for Product A, Product B, Product C
+  const dummyData = [
+    {
+      name: "Product A",
+      price: 19.99,
+      quantity: 100,
+    },
+    {
+      name: "Product B",
+      price: 29.99,
+      quantity: 150,
+    },
+    {
+      name: "Product C",
+      price: 39.99,
+      quantity: 200,
+    },
+  ];
+
+  dummyData.forEach(async (product) => {
+    try {
+      const existingProduct = await Inventory.findOne({
+        where: { name: product.name },
+      });
+
+      if (existingProduct) {
+        console.log(
+          `${product.name} already exists in the inventory. Skipping insertion.`
+        );
+      } else {
+        await Inventory.create(product);
+        console.log(`${product.name} has been added to the inventory.`);
+      }
+    } catch (error) {
+      console.error(`Error processing ${product.name}: `, error);
+    }
   });
-};
+});
 
-// Get inventory by Product ID
-const getInventoryByProductId = (productId) => {
-  const item = inventory.find((inv) => inv.productId === productId);
-  if (item) {
-    const product = productService.getProductById(productId);
-    return {
-      ...item,
-      productDetails: product || { name: 'Product not found', price: 0 },
-    };
-  }
-  return null;
-};
-
-// Add inventory item
-const addInventory = (productId, quantity) => {
-  const product = productService.getProductById(productId);
-  if (!product) {
-    return { error: 'Product not found. Cannot add inventory.' };
-  }
-  inventory.push({ productId, quantity });
-  return { message: 'Inventory added successfully', productId, quantity };
-};
-
-// Update inventory
-const updateInventory = (productId, newQuantity) => {
-  const index = inventory.findIndex((inv) => inv.productId === productId);
-  if (index !== -1) {
-    inventory[index].quantity = newQuantity;
-    return { message: 'Inventory updated successfully', productId, newQuantity };
-  }
-  return { error: 'Inventory item not found.' };
-};
-
-// Delete inventory item
-const deleteInventory = (productId) => {
-  const index = inventory.findIndex((inv) => inv.productId === productId);
-  if (index !== -1) {
-    inventory.splice(index, 1);
-    return { message: 'Inventory item removed successfully', productId };
-  }
-  return { error: 'Inventory item not found.' };
-};
-
-module.exports = {
-  getInventory,
-  getInventoryByProductId,
-  addInventory,
-  updateInventory,
-  deleteInventory,
-};
+module.exports = { sequelize, Inventory };
