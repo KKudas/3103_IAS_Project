@@ -8,6 +8,7 @@ const https = require("https");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
+const { Sequelize } = require("sequelize");
 
 const { sequelize, User } = require("./models/user.js");
 require("dotenv").config();
@@ -18,6 +19,7 @@ const {
   validateId,
   validateUserParams,
   validateUserLoginParams,
+  validateUserUpdateParams,
 } = require("./middleware/sanitation.js");
 const limiter = require("./middleware/limiter.js");
 
@@ -99,7 +101,10 @@ app.get(
       const token = generateToken(req.user);
 
       // Send the token as JSON response
-      res.json({ token });
+      res.json({
+        message: "User successfully logged in",
+        token,
+      });
     } catch (error) {
       console.error("Error generating token:", error);
       res.status(500).json({ error: "Failed to generate token" });
@@ -134,8 +139,7 @@ app.post("/register", limiter, validateUserParams(), async (req, res) => {
       role: role || "customer",
     });
 
-    const token = generateToken(newUser);
-    res.status(201).json({ token });
+    res.status(201).json({ message: "User successfully registered" });
   } catch (error) {
     res.status(500).json({ error: "Error registering user" });
   }
@@ -146,7 +150,11 @@ app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({
+      where: {
+        [Sequelize.Op.or]: [{ username: username }, { email: username }],
+      },
+    });
 
     if (!user) {
       return res.status(401).send("Wrong username or password");
@@ -158,7 +166,7 @@ app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.json({ token });
+    res.json({ id: user.id, message: "User successfully logged in", token });
   } catch (error) {
     res.status(500).json({ error: "There was an error logging in" });
   }
@@ -208,6 +216,7 @@ app.put(
   "/:id",
   limiter,
   validateId("id"),
+  validateUserUpdateParams(),
   authenticateToken(),
   async (req, res) => {
     try {
