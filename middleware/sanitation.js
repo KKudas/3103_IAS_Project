@@ -11,20 +11,50 @@ const validateId = (id) => {
   ];
 };
 
-const validateProductParams = () => {
+const validateInventoryParams = () => {
   return [
-    body("prodName")
+    body("name")
       .notEmpty()
       .withMessage("Product name cannot be empty")
       .isString()
       .withMessage("Product name must be a string")
       .trim()
       .escape(),
-    body("prodPrice")
+    body("price")
+      .trim()
+      .escape()
+      .isFloat({ min: 1.0 })
+      .withMessage("Product price must be an integer greater than 0"),
+    body("quantity")
       .trim()
       .escape()
       .isInt({ min: 1 })
+      .withMessage("Product quantity must be an integer greater than 0"),
+  ];
+};
+
+const validateInventoryUpdateParams = () => {
+  return [
+    body("name")
+      .optional()
+      .notEmpty()
+      .withMessage("Product name cannot be empty")
+      .isString()
+      .withMessage("Product name must be a string")
+      .trim()
+      .escape(),
+    body("price")
+      .optional()
+      .trim()
+      .escape()
+      .isFloat({ min: 1.0 })
       .withMessage("Product price must be an integer greater than 0"),
+    body("quantity")
+      .optional()
+      .trim()
+      .escape()
+      .isInt({ min: 1 })
+      .withMessage("Product quantity must be an integer greater than 0"),
   ];
 };
 
@@ -92,7 +122,6 @@ const validateUserUpdateParams = () => {
       .withMessage("Username must be a string")
       .trim()
       .escape(),
-
     body("email")
       .optional()
       .notEmpty()
@@ -101,7 +130,6 @@ const validateUserUpdateParams = () => {
       .withMessage("Must be a valid email")
       .trim()
       .escape(),
-
     body("password")
       .optional()
       .notEmpty()
@@ -142,9 +170,10 @@ const validateOrderParams = () => {
 
 module.exports = {
   validateId,
-  validateProductParams,
+  validateInventoryParams,
+  validateInventoryUpdateParams,
   validateUserParams,
   validateUserLoginParams,
+  validateUserUpdateParams,
   validateOrderParams,
-  validateUserUpdateParams
 };

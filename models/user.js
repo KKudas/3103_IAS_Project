@@ -1,17 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
-
-// Connect to the MySQL database
-const sequelize = new Sequelize("enterpriseapp", "root", "password", {
-  host: "localhost",
-  dialect: "mysql",
-});
-
-// Test the database connection
-sequelize
-  .authenticate()
-  .then(() => console.log("Database connected..."))
-  .catch((err) => console.log("Error: " + err));
+const sequelize = require('./db');
 
 // Define the User model
 const User = sequelize.define(

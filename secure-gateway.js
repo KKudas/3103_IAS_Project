@@ -9,10 +9,10 @@ const app = express();
 // MySQL Database Connection
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root", // your database username
-  password: "@localhost123", // your database password
-  database: "enterpriseapp", // the database you want to connect to
-  port: 3306, // the port your database is running on, default is 3306
+  user: "root",
+  password: "@localhost123", // database password
+  database: "enterpriseapp", // database name
+  port: 3306,
 });
 
 db.connect((err) => {
@@ -30,8 +30,8 @@ const options = {
 };
 
 // Proxy options for microservices convert to inventory
-const productServiceProxy = createProxyMiddleware({
-  target: "https://localhost:4001", // URL of the product service
+const inventoryServiceProxy = createProxyMiddleware({
+  target: "https://localhost:4001", // URL of the inventory service
   changeOrigin: true,
   secure: false,
 });
@@ -49,7 +49,7 @@ const orderServiceProxy = createProxyMiddleware({
 });
 
 // Routes
-app.use("/products", productServiceProxy);
+app.use("/inventory", inventoryServiceProxy);
 app.use("/orders", orderServiceProxy);
 app.use("/users", userServiceProxy);
 
