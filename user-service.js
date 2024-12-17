@@ -9,7 +9,7 @@ const fs = require("fs");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 
-const { sequelize, User } = require("./models/models.js");
+const { sequelize, User } = require("./models/user.js");
 require("dotenv").config();
 
 // Middleware
@@ -69,12 +69,12 @@ passport.use(
         let user = await User.findOne({ where: { github_id: profile.id } });
 
         if (!user) {
-          user = {
+          user = await User.create({
             github_id: profile.id,
             username: profile.username,
             email: profile.emails?.[0]?.value || null,
             role: "customer", // default role
-          };
+          });
         }
 
         return done(null, user);
@@ -92,25 +92,30 @@ app.get(
 
 app.get(
   "/auth/github/callback",
-  passport.authenticate("github", { session: false }), // Disable session
-  (req, res) => {
-    // Generate JWT token
-    const token = generateToken(req.user);
+  passport.authenticate("github", { session: false }),
+  async (req, res) => {
+    try {
+      // Generate JWT token
+      const token = generateToken(req.user);
 
-    // Redirect to frontend with token (or send directly)
-    res.redirect(`https://localhost:8080/oauth-callback?token=${token}`);
+      // Send the token as JSON response
+      res.json({ token });
+    } catch (error) {
+      console.error("Error generating token:", error);
+      res.status(500).json({ error: "Failed to generate token" });
+    }
   }
 );
 
-// Local Provider
 // POST /register: Register a new user
 app.post("/register", limiter, validateUserParams(), async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
-
-    // Check if username or email already exists
     const existingUser = await User.findOne({
-      where: { [Sequelize.Op.or]: [{ username }, { email }] },
+      where: {
+        username: username,
+        email: email,
+      },
     });
 
     if (existingUser) {
@@ -119,7 +124,6 @@ app.post("/register", limiter, validateUserParams(), async (req, res) => {
         .json({ error: "Username or email already exists" });
     }
 
-    // Hash the password using bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
@@ -142,14 +146,12 @@ app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Find user by username
     const user = await User.findOne({ where: { username } });
 
     if (!user) {
       return res.status(401).send("Wrong username or password");
     }
 
-    // Compare password using bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).send("Wrong username or password");
@@ -162,25 +164,44 @@ app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
   }
 });
 
-// GET /:id: Get user details by ID
-app.get("/:id", limiter, validateId("id"), authenticateToken(), (req, res) => {
+// GET /: Get all users
+app.get("/", limiter, authenticateToken(), async (req, res) => {
   try {
-    const userId = parseInt(req.params.id, 10);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Unauthorized" });
     }
-
-    // Only the user or admin can access their data
-    if (userId === req.user.id || req.user.role === "admin") {
-      res.json(user);
-    } else {
-      res.status(403).json({ message: "Unauthorized Access" });
-    }
+    const users = await User.findAll();
+    res.json(users);
   } catch (error) {
-    res.status(500).json({ error: "There was an error fetching the user" });
+    res.status(500).json({ error: "There was an error fetching the users" });
   }
 });
+
+// GET /:id: Get user details by ID
+app.get(
+  "/:id",
+  limiter,
+  validateId("id"),
+  authenticateToken(),
+  async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id, 10);
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (userId === req.user.id || req.user.role === "admin") {
+        res.json(user);
+      } else {
+        res.status(403).json({ message: "Unauthorized Access" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "There was an error fetching the user" });
+    }
+  }
+);
 
 // PUT /:id: Update user information
 app.put(
@@ -197,7 +218,10 @@ app.put(
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Only the user or admin can update their own data
+      if (req.body.github_id) {
+        return res.status(400).json({ error: "Cannot update github_id" });
+      }
+
       if (userId === req.user.id || req.user.role === "admin") {
         await user.update(req.body);
         res.status(200).json({ message: "User successfully updated" });

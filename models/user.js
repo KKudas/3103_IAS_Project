@@ -14,28 +14,34 @@ sequelize
   .catch((err) => console.log("Error: " + err));
 
 // Define the User model
-const User = sequelize.define("User", {
-  github_id: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
+const User = sequelize.define(
+  "User",
+  {
+    github_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: "customer", // default role
+    },
   },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  role: {
-    type: DataTypes.STRING,
-    defaultValue: "customer", // default role
-  },
-});
+  {
+    timestamps: false,
+  }
+);
 
 // Sync all models to the database
 sequelize

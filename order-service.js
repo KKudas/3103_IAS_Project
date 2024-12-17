@@ -13,7 +13,7 @@ const {
 const limiter = require("./middleware/limiter.js");
 
 const app = express();
-const port = 3003;
+const port = 4003;
 app.use(express.json());
 
 // Load SSL certificates
