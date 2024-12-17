@@ -6,7 +6,7 @@ Created by:
 - Kyle Tubod
 - Lyan Ethan Jover
 
-# Project Overview //NOT YET FINAL
+## Project Overview //NOT YET FINAL
 
 This project demonstrates a simple microservice involving three independent microservices:
 
@@ -14,7 +14,7 @@ This project demonstrates a simple microservice involving three independent micr
 - **Inventory Service**: Inventory desc...
 - **Support Service**: Customer Support desc...
 
-# Documentation
+## Documentation
 
 - [User Service](./doc/userservice.md)
 - [Inventory Service](./doc/inventoryservice.md)
