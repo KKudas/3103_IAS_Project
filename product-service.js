@@ -72,6 +72,11 @@ app.get("/:productId", limiter, validateId("productId"), (req, res) => {
   }
 });
 
+// New function: Get product by productId
+const getProductById = (id) => {
+  return products.find((product) => product.productId === id);
+};
+
 // PUT /:productId: [Admin] Update a product
 app.put(
   "/:productId",
@@ -126,7 +131,10 @@ app.delete(
   }
 );
 
-// Secure HTTPS server
 https.createServer(options, app).listen(port, () => {
   console.log(`Order service running securely on port ${port}`);
 });
+
+module.exports = {
+  getProductById,
+};
