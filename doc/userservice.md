@@ -1,6 +1,25 @@
 # User Routes
 
 This document describes the available API routes for the User Service.
+Dummy data for users has been already created:
+
+  - Admin  
+
+  ```json
+  {
+    "username": "admin",
+    "password": "admin123"
+  }
+  ```
+
+  - Customer
+
+  ```json
+  {
+    "username": "customer",
+    "password": "customer123"
+  }
+  ```
 
 ## Github Provider
 
@@ -10,15 +29,17 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
 
 ```json
 {
+  "message": "User successfully logged in",
   "token": "JWT_TOKEN_HERE"
 }
 ```
 
 ## Local Provider
 
-1. **POST https&#58;//localhost:8080/users/register**  
+1. **POST https&#58;//localhost:8080/users/register**
 
    **Request body**
+
    ```json
    {
      "username": "John",
@@ -27,13 +48,16 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
      "role": "customer"
    }
    ```
+
    **Response**
+
    ```json
    {
-     "token": "JWT_TOKEN_HERE"
+     "message": "User successfully registered"
    }
    ```
-2. **POST https&#58;//localhost:8080/users/login**  
+
+2. **POST https&#58;//localhost:8080/users/login**
 
    **Request body**
 
@@ -48,11 +72,13 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
 
    ```json
    {
+     "id": 1,
+     "message": "User successfully logged in",
      "token": "JWT_TOKEN_HERE"
    }
    ```
 
-3. **[ADMIN] GET https&#58;//localhost:8080/users/**  
+3. **[ADMIN] GET https&#58;//localhost:8080/users/**
 
    **Response**
 
@@ -77,7 +103,7 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    ]
    ```
 
-4. **[ADMIN, USER] GET https&#58;//localhost:8080/users/{id}**  
+4. **[ADMIN, USER] GET https&#58;//localhost:8080/users/{id}**
 
    **Response**
 
@@ -92,7 +118,7 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    }
    ```
 
-5. **[ADMIN, USER] PUT https&#58;//localhost:8080/users/{id}**  
+5. **[ADMIN, USER] PUT https&#58;//localhost:8080/users/{id}**
 
    **Request body**
 
@@ -110,7 +136,7 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    }
    ```
 
-6. **[ADMIN, USER] DELETE https&#58;//localhost:8080/users/{id}**  
+6. **[ADMIN, USER] DELETE https&#58;//localhost:8080/users/{id}**
 
    **Response**
 
