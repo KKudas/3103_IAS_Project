@@ -18,7 +18,7 @@ const options = {
 };
 
 const app = express();
-const port = 3001;
+const port = 4001;
 app.use(express.json());
 
 let productId = 1;

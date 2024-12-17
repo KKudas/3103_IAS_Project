@@ -1,6 +1,7 @@
 // Authorization middleware to check user roles and authenticate tokens
+require("dotenv").config({ path: "./.env" });
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "Microservice";
+const SECRET_KEY = process.env.JWT_SECRET;
 
 // Function to authenticate jwt token
 function authenticateToken() {

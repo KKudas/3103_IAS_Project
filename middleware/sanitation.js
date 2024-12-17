@@ -1,5 +1,4 @@
 // Sanitation middleware to clean parameters
-
 const { body, param, validationResult } = require("express-validator");
 
 const validateId = (id) => {
@@ -57,6 +56,12 @@ const validateUserParams = () => {
       .withMessage("Username must be a string")
       .trim()
       .escape(),
+    body("email")
+      .notEmpty()
+      .withMessage("Email cannot be empty")
+      .isEmail()
+      .trim()
+      .escape(),
     body("password")
       .notEmpty()
       .withMessage("Password cannot be empty")
@@ -70,7 +75,53 @@ const validateUserParams = () => {
       .isString()
       .withMessage("Role must be a string")
       .trim()
+      .escape()
+      .customSanitizer((value) => {
+        return value.toLowerCase(); // Normalize role to lowercase
+      }),
+  ];
+};
+
+const validateUserUpdateParams = () => {
+  return [
+    body("username")
+      .optional()
+      .notEmpty()
+      .withMessage("Username cannot be empty")
+      .isString()
+      .withMessage("Username must be a string")
+      .trim()
       .escape(),
+
+    body("email")
+      .optional()
+      .notEmpty()
+      .withMessage("Email cannot be empty")
+      .isEmail()
+      .withMessage("Must be a valid email")
+      .trim()
+      .escape(),
+
+    body("password")
+      .optional()
+      .notEmpty()
+      .withMessage("Password cannot be empty")
+      .isString()
+      .withMessage("Password must be a string")
+      .trim()
+      .escape(),
+
+    body("role")
+      .optional()
+      .notEmpty()
+      .withMessage("Role cannot be empty")
+      .isString()
+      .withMessage("Role must be a string")
+      .trim()
+      .escape()
+      .customSanitizer((value) => {
+        return value.toLowerCase(); // Normalize role to lowercase
+      }),
   ];
 };
 
