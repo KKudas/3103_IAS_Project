@@ -38,7 +38,6 @@ sequelize
   .then(async () => {
     console.log("User table created or already exists");
 
-    // Check if admin and customer users exist, if not create them
     const adminExists = await User.findOne({ where: { username: "admin" } });
     if (!adminExists) {
       const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -64,7 +63,37 @@ sequelize
       });
       console.log("Customer user created");
     }
+
+    const managerExists = await User.findOne({
+      where: { username: "manager" },
+    });
+    if (!managerExists) {
+      const hashedPassword = await bcrypt.hash("manager123", 10);
+      await User.create({
+        username: "manager",
+        email: "manager@manager.com",
+        password: hashedPassword,
+        role: "manager",
+      });
+      console.log("Manager user created");
+    }
+
+    const supportExists = await User.findOne({
+      where: { username: "support" },
+    });
+    if (!supportExists) {
+      const hashedPassword = await bcrypt.hash("support123", 10);
+      await User.create({
+        username: "support",
+        email: "support@support.com",
+        password: hashedPassword,
+        role: "support",
+      });
+      console.log("Support user created");
+    }
   })
+
+  
   .catch((err) => console.log("Error syncing models: " + err));
 
 module.exports = { sequelize, User };

@@ -40,7 +40,6 @@ const Order = sequelize.define(
   }
 );
 
-// Sync all models to the database
 sequelize.sync({ force: false }).then(() => {
   console.log("User and Order tables created or already exist");
 });

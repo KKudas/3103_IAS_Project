@@ -26,7 +26,6 @@ const Inventory = sequelize.define(
 sequelize.sync({ force: false }).then(() => {
   console.log("Inventory table created or already exists");
 
-  // Dummy data for Product A, Product B, Product C
   const dummyData = [
     {
       name: "Product A",
