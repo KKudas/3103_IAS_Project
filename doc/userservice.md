@@ -1,9 +1,8 @@
-# User Routes
+## User Service
 
-This document describes the available API routes for the User Service.  
-Dummy data for users has been already created:
+### Dummy Data
 
-- Admin
+- **Admin**
 
 ```json
 {
@@ -12,7 +11,7 @@ Dummy data for users has been already created:
 }
 ```
 
-- Customer
+- **Customer**
 
 ```json
 {
@@ -21,11 +20,12 @@ Dummy data for users has been already created:
 }
 ```
 
-## Github Provider
+### Authentication Providers
 
-Access this link register and receive jwt token: https://localhost:8080/users/auth/github
+#### GitHub Provider
 
-**Response**
+- **URL:** `https://localhost:8080/users/auth/github`
+- **Response:**
 
 ```json
 {
@@ -34,70 +34,67 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
 }
 ```
 
-## Local Provider
+#### Local Provider
 
-1. **POST https&#58;//localhost:8080/users/register**
+1. **Register a User**
 
-   **Description**  
-   This endpoint registers a new user with a specified username, email, password, and role. The password will be encrypted before storage.
+   - **[POST]** `https://localhost:8080/users/register`
+   - **Request Body:**
 
-   **Request body**
-
-   ```json
-   {
-     "username": "John",
-     "email": "JohnDoe@gmail.com",
-     "password": "@Password123",
-     "role": "customer"
-   }
-   ```
-
-   **Response**
-
-   ```json
-   {
-     "message": "User successfully registered",
-     "user": {
-       "id": 1,
-       "github_id": null,
+     ```json
+     {
        "username": "John",
        "email": "JohnDoe@gmail.com",
-       "password": "ENCRYPTED_PASSWORD",
+       "password": "@Password123",
        "role": "customer"
      }
-   }
-   ```
+     ```
 
-2. **POST https&#58;//localhost:8080/users/login**
+   - **Response:**
 
-   **Description**  
-   This endpoint logs in a user by verifying their username/email and password. If valid, a JWT token will be returned for subsequent authentication.
+     ```json
+     {
+       "message": "User successfully registered",
+       "user": {
+         "id": 1,
+         "github_id": null,
+         "username": "John",
+         "email": "JohnDoe@gmail.com",
+         "password": "ENCRYPTED_PASSWORD",
+         "role": "customer"
+       }
+     }
+     ```
 
-   **Request body**
+2. **Login a User**
 
-   ```json
-   {
-     "username": "John",
-     "password": "@Password123"
-   }
-   ```
+   - **[POST]** `https://localhost:8080/users/login`
+   - **Request Body:**
 
-   **Response**
+     ```json
+     {
+       "username": "John",
+       "password": "@Password123"
+     }
+     ```
 
-   ```json
-   {
-     "id": 1,
-     "message": "User successfully logged in",
-     "token": "JWT_TOKEN_HERE"
-   }
-   ```
+   - **Response:**
 
-3. **[ADMIN] GET https&#58;//localhost:8080/users/**
+     ```json
+     {
+       "id": 1,
+       "message": "User successfully logged in",
+       "token": "JWT_TOKEN_HERE"
+     }
+     ```
 
-   **Description**  
-   This endpoint retrieves a list of all users in the system. It is only accessible by an admin.
+3. **Retrieve all users**
 
-   **Response**
+   - **[GET] https&#58;//localhost:8080/users/**
+
+   - **Roles Required**: Admin
+
+   - **Response**
 
    ```json
    [
@@ -120,12 +117,13 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    ]
    ```
 
-4. **[ADMIN, USER] GET https&#58;//localhost:8080/users/{id}**
+4. **Retrieve user by ID**
 
-   **Description**  
-   This endpoint retrieves the details of a specific user by their ID. Both admins and the user themselves can access this endpoint.
+   - **[GET] https&#58;//localhost:8080/users/{id}**
 
-   **Response**
+   - **Roles Required**: Admin, Support, User
+
+   - **Response**
 
    ```json
    {
@@ -138,12 +136,13 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    }
    ```
 
-5. **[ADMIN, USER] PUT https&#58;//localhost:8080/users/{id}**
+5. **Update user by ID**
 
-   **Description**  
-   This endpoint updates the details of an existing user by their ID. The user can modify their own information, and an admin can modify any user's details.
+   - **[PUT] https&#58;//localhost:8080/users/{id}**
 
-   **Request body**
+   - **Roles Required**: Admin, Support, User
+
+   - **Request body**
 
    ```json
    {
@@ -151,7 +150,7 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    }
    ```
 
-   **Response**
+   - **Response**
 
    ```json
    {
@@ -167,12 +166,13 @@ Access this link register and receive jwt token: https://localhost:8080/users/au
    }
    ```
 
-6. **[ADMIN, USER] DELETE https&#58;//localhost:8080/users/{id}**
+6. **Delete user by ID**
 
-   **Description**  
-   This endpoint deletes a user by their ID. Both admins and users can delete their own account, but only admins can delete other users' accounts.
+   - **[DELETE] https&#58;//localhost:8080/users/{id}**
 
-   **Response**
+   - **Roles Required**: Admin, Support, User
+
+   - **Response**
 
    ```json
    {

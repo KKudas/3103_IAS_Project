@@ -16,7 +16,10 @@ This project demonstrates a simple microservice involving three independent micr
 
 ## Documentation
 
+This document provides detailed descriptions of the API routes available for the User, Inventory, Order, and Support services.
+
 - [User Service](./doc/userservice.md)
+- [Order Service](./doc/orderservice.md)
 - [Inventory Service](./doc/inventoryservice.md)
 - [Support Service](./doc/supportservice.md)
 
@@ -65,9 +68,9 @@ This project demonstrates a simple microservice involving three independent micr
    ```
 
    ```
-   node inventory-service.js
+   node order-service.js
    ```
 
    ```
-   node order-service.js
+   node inventory-service.js
    ```
