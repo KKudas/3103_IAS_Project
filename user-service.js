@@ -10,11 +10,14 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const { Sequelize } = require("sequelize");
 
-const { sequelize, User } = require("./models/user.js");
-require("dotenv").config();
+const { User } = require("./models/usermodel.js");
+require("dotenv").config({ path: "../../.env" });
 
 // Middleware
-const { authenticateToken } = require("./middleware/authorization.js");
+const {
+  authenticateToken,
+  authorization,
+} = require("./middleware/authorization.js");
 const {
   validateId,
   validateUserParams,
@@ -22,6 +25,7 @@ const {
   validateUserUpdateParams,
 } = require("./middleware/sanitation.js");
 const limiter = require("./middleware/limiter.js");
+const path = require("path");
 
 // Load SSL certificates
 const options = {
@@ -67,7 +71,6 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        // Find or create GitHub user
         let user = await User.findOne({ where: { github_id: profile.id } });
 
         if (!user) {
@@ -97,10 +100,8 @@ app.get(
   passport.authenticate("github", { session: false }),
   async (req, res) => {
     try {
-      // Generate JWT token
       const token = generateToken(req.user);
 
-      // Send the token as JSON response
       res.json({
         message: "User successfully logged in",
         token,
@@ -112,7 +113,7 @@ app.get(
   }
 );
 
-// POST /register: Register a new user
+// [ALL] POST /register: Register a new user
 app.post("/register", limiter, validateUserParams(), async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
@@ -145,7 +146,7 @@ app.post("/register", limiter, validateUserParams(), async (req, res) => {
   }
 });
 
-// POST /login: Login user
+// [ALL] POST /login: Login user
 app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -172,20 +173,23 @@ app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
   }
 });
 
-// GET /: Get all users
-app.get("/", limiter, authenticateToken(), async (req, res) => {
-  try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ message: "Unauthorized" });
+// [ADMIN] GET /: Get all users
+app.get(
+  "/",
+  limiter,
+  authenticateToken(),
+  authorization(["admin"]),
+  async (req, res) => {
+    try {
+      const users = await User.findAll();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: "There was an error fetching the users" });
     }
-    const users = await User.findAll();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: "There was an error fetching the users" });
   }
-});
+);
 
-// GET /:id: Get user details by ID
+// [CUSTOMER, ADMIN, SUPPORT] GET /:id: Get user details by ID
 app.get(
   "/:id",
   limiter,
@@ -200,7 +204,11 @@ app.get(
         return res.status(404).json({ message: "User not found" });
       }
 
-      if (userId === req.user.id || req.user.role === "admin") {
+      if (
+        userId === req.user.id ||
+        req.user.role === "support" ||
+        req.user.role === "admin"
+      ) {
         res.json(user);
       } else {
         res.status(403).json({ message: "Unauthorized Access" });
@@ -211,7 +219,7 @@ app.get(
   }
 );
 
-// PUT /:id: Update user information
+// [CUSTOMER, ADMIN, SUPPORT] PUT /:id: Update user information
 app.put(
   "/:id",
   limiter,
@@ -231,7 +239,15 @@ app.put(
         return res.status(400).json({ error: "Cannot update github_id" });
       }
 
-      if (userId === req.user.id || req.user.role === "admin") {
+      if (req.body.role && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Admin can only update roles" });
+      }
+
+      if (
+        userId === req.user.id ||
+        req.user.role === "support" ||
+        req.user.role === "admin"
+      ) {
         await user.update(req.body);
         res.status(200).json({ message: "User successfully updated", user });
       } else {
@@ -243,7 +259,7 @@ app.put(
   }
 );
 
-// DELETE /:id: Delete a user
+// [CUSTOMER, ADMIN, SUPPORT] DELETE /:id: Delete a user
 app.delete(
   "/:id",
   limiter,
@@ -258,8 +274,11 @@ app.delete(
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Only the user or admin can delete their own data
-      if (userId === req.user.id || req.user.role === "admin") {
+      if (
+        userId === req.user.id ||
+        req.user.role === "support" ||
+        req.user.role === "admin"
+      ) {
         await user.destroy();
         res.status(200).json({ message: "User successfully deleted" });
       } else {
