@@ -21,6 +21,7 @@
     "express-validator": "^7.2.0",
     "http-proxy-middleware": "^3.0.3",
     "https": "^1.0.0",
+    "ioredis": "^5.4.1",
     "mysql2": "^3.11.5",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",

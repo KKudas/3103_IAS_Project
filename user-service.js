@@ -9,6 +9,8 @@ const fs = require("fs");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const { Sequelize } = require("sequelize");
+const Queue = require("bull");  // Import Bull
+const Redis = require("ioredis"); // Import ioredis for Redis connection
 
 const { User } = require("./models/usermodel.js");
 require("dotenv").config({ path: "../../.env" });
@@ -101,7 +103,6 @@ app.get(
   async (req, res) => {
     try {
       const token = generateToken(req.user);
-
       res.json({
         message: "User successfully logged in",
         token,
@@ -289,6 +290,37 @@ app.delete(
     }
   }
 );
+
+// Set up Redis and Bull Queue for background jobs
+const redis = new Redis({ host: "localhost", port: 6379 });
+const userQueue = new Queue("user-queue", {
+  redis: { host: "localhost", port: 6379 },
+});
+
+// Add a job to the queue (POST /add-job)
+app.post("/add-job", async (req, res) => {
+  await userQueue.add({
+    taskType: "add-user",  // Task type for processing
+    userData: req.body,    // User data passed in the request body
+  });
+  res.send("Job added to the queue!");
+});
+
+// Process the job in the background
+userQueue.process(async (job) => {
+  console.log(`Processing job: ${JSON.stringify(job.data)}`);
+
+  if (job.data.taskType === "add-user") {
+    const { userData } = job.data;
+    try {
+      const user = await User.create(userData);
+      console.log(`User added: ${user.username}`);
+    } catch (error) {
+      console.error("Error processing job:", error);
+      throw new Error("Error processing job");
+    }
+  }
+});
 
 // Secure HTTPS server
 https.createServer(options, app).listen(port, () => {
