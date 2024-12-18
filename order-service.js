@@ -8,7 +8,7 @@ const cors = require("cors");
 const { Sequelize } = require("sequelize");
 const axios = require("axios");
 
-const { Order } = require("./models/ordermodel.js");
+const { sequelize, Order } = require("./models/ordermodel.js");
 require("dotenv").config({ path: "../../.env" });
 
 // Middleware
