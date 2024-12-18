@@ -48,10 +48,17 @@ const orderServiceProxy = createProxyMiddleware({
   secure: false,
 });
 
+const customerSupportServiceProxy = createProxyMiddleware({
+  target: "https://localhost:4004", // URL of the order service
+  changeOrigin: true,
+  secure: false,
+});
+
 // Routes
 app.use("/inventory", inventoryServiceProxy);
 app.use("/orders", orderServiceProxy);
 app.use("/users", userServiceProxy);
+app.use("/support", customerSupportServiceProxy);
 
 https.createServer(options, app).listen(8080, () => {
   console.log("gateway started on port 8080");

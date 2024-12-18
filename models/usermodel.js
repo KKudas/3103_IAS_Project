@@ -6,6 +6,12 @@ const sequelize = require("./db");
 const User = sequelize.define(
   "User",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     github_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
