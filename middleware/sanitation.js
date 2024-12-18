@@ -58,6 +58,7 @@ const validateInventoryUpdateParams = () => {
   ];
 };
 
+// CRM Sanitation
 const validateUserLoginParams = () => {
   return [
     body("username")
@@ -112,6 +113,41 @@ const validateUserParams = () => {
   ];
 };
 
+const validateOrderParams = () => {
+  return [
+    body("product_id")
+      .trim()
+      .escape()
+      .isInt({ min: 1 })
+      .withMessage("Product ID must be an integer greater than 0"),
+    body("quantity")
+      .trim()
+      .escape()
+      .isInt({ min: 1 })
+      .withMessage("Quantity must be an integer greater than 0"),
+    body("status")
+      .optional()
+      .notEmpty()
+      .withMessage("status cannot be empty")
+      .isString()
+      .withMessage("status must be a string")
+      .trim()
+      .escape(),
+  ];
+};
+
+const validateOrderUpdateParams = () => {
+  return [
+    body("status")
+      .notEmpty()
+      .withMessage("status cannot be empty")
+      .isString()
+      .withMessage("status must be a string")
+      .trim()
+      .escape(),
+  ];
+};
+
 const validateUserUpdateParams = () => {
   return [
     body("username")
@@ -153,21 +189,6 @@ const validateUserUpdateParams = () => {
   ];
 };
 
-const validateOrderParams = () => {
-  return [
-    body("productId")
-      .trim()
-      .escape()
-      .isInt({ min: 1 })
-      .withMessage("Product ID must be an integer greater than 0"),
-    body("quantity")
-      .trim()
-      .escape()
-      .isInt({ min: 1 })
-      .withMessage("Quantity must be an integer greater than 0"),
-  ];
-};
-
 module.exports = {
   validateId,
   validateInventoryParams,
@@ -176,4 +197,5 @@ module.exports = {
   validateUserLoginParams,
   validateUserUpdateParams,
   validateOrderParams,
+  validateOrderUpdateParams,
 };

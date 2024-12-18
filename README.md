@@ -24,32 +24,50 @@ This project demonstrates a simple microservice involving three independent micr
 
 1. Clone the repository
 
-```
-git clone https://github.com/KKudas/3103_SIA_Project.git
-```
+   ```
+   git clone https://github.com/KKudas/3103_SIA_Project.git
+   ```
 
 2. CD into root folder
 
-```
-cd 3103_SIA_Project
-```
+   ```
+   cd 3103_SIA_Project
+   ```
 
 3. Install node dependency
 
-```
-npm install
-```
+   ```
+   npm install
+   ```
 
-4. Run each API on different terminals //Not yet final
+4. Create MySQL schema
 
-```
-node product-service.js
-```
+   Before running the services, you need to set up a MySQL schema. Open MySQL Workbench (or your preferred MySQL client) and run the following query:
 
-```
-node user-service.js
-```
+   ```sql
+   CREATE SCHEMA IF NOT EXISTS enterpriseapp;
+   ```
 
-```
-node order-service.js
-```
+   The `enterpriseapp` schema will store the necessary database for your services.
+
+5. Configure the secure-gateway.js file
+
+   In the project folder, navigate to the secure-gateway.js file. Open it and replace the default password with the password used by your system. Find the line where the MySQL password is set and change it accordingly.
+
+6. Run each API on different terminals //Not yet final
+
+   ```
+   node secure-gateway.js
+   ```
+
+   ```
+   node user-service.js
+   ```
+
+   ```
+   node inventory-service.js
+   ```
+
+   ```
+   node order-service.js
+   ```
