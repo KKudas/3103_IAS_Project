@@ -2,7 +2,7 @@
 
 This document describes the available API routes for the Inventory Service.
 
-1. **[ADMIN] POST https&#58;//localhost:8080/inventory/add**
+1. **[ADMIN, MANAGER] POST https&#58;//localhost:8080/inventory/add**
 
    **Description**  
     This endpoint allows an admin to add a new product to the inventory with the specified name, price, and quantity.
@@ -31,7 +31,7 @@ This document describes the available API routes for the Inventory Service.
    }
    ```
 
-2. **[] GET https&#58;//localhost:8080/inventory**
+2. **[ADMIN, MANAGERS] GET https&#58;//localhost:8080/inventory**
 
    **Description**  
     This endpoint retrieves a list of all products in the inventory. Accessible by admins and managers.
@@ -55,7 +55,7 @@ This document describes the available API routes for the Inventory Service.
    ]
    ```
 
-3. **[] GET https&#58;//localhost:8080/inventory/{id}**
+3. **[ALL] GET https&#58;//localhost:8080/inventory/{id}**
 
    **Description**  
     This endpoint retrieves the details of a specific product by its ID.

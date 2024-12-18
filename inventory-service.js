@@ -3,10 +3,13 @@ const express = require("express");
 const https = require("https");
 const fs = require("fs");
 const { Sequelize } = require("sequelize");
-const { sequelize, Inventory } = require("./models/inventory.js");
+const { sequelize, Inventory } = require("./models/inventorymodel.js");
 
 // Middlewares
-const { authorization } = require("./middleware/authorization.js");
+const {
+  authorization,
+  authenticateToken,
+} = require("./middleware/authorization.js");
 const {
   validateId,
   validateInventoryParams,
@@ -24,12 +27,13 @@ const app = express();
 const port = 4001;
 app.use(express.json());
 
-// POST /add: [Admin] Add a new product.
+// [ADMIN, MANAGER] POST /add: Add a new product.
 app.post(
   "/add",
   limiter,
+  authenticateToken(),
+  authorization(["admin", "manager"]),
   validateInventoryParams(),
-  authorization(["admin"]),
   async (req, res) => {
     try {
       const data = await Inventory.create({
@@ -47,7 +51,7 @@ app.post(
   }
 );
 
-// GET /: [ADMIN, MANAGER] Get all products
+// [ALL] GET /: Get all products
 app.get("/", limiter, async (req, res) => {
   try {
     const products = await Inventory.findAll();
@@ -57,7 +61,7 @@ app.get("/", limiter, async (req, res) => {
   }
 });
 
-// GET /:productId: Get product details by ID.
+// [ALL] GET /:productId: Get product details by ID.
 app.get("/:productId", limiter, validateId("productId"), async (req, res) => {
   try {
     const productId = parseInt(req.params.productId, 10);
@@ -73,13 +77,14 @@ app.get("/:productId", limiter, validateId("productId"), async (req, res) => {
   }
 });
 
-// PUT /:productId: [Admin] Update a product
+// [CUSTOMER, ADMIN, MANAGER] PUT /:productId: Update a product
 app.put(
   "/:productId",
   limiter,
   validateId("productId"),
+  authenticateToken(),
+  authorization(["admin", "customer", "manager"]),
   validateInventoryUpdateParams(),
-  authorization(["admin"]),
   async (req, res) => {
     try {
       const productId = parseInt(req.params.productId, 10);
@@ -87,6 +92,31 @@ app.put(
 
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
+      }
+
+      if (req.user.role === "customer") {
+        if (!req.body.quantity) {
+          return res
+            .status(400)
+            .json({ message: "Quantity is required for customers." });
+        }
+
+        const invalidFields = Object.keys(req.body).filter(
+          (field) => field !== "quantity"
+        );
+        if (invalidFields.length > 0) {
+          return res.status(400).json({
+            message: `Customers are only allowed to update the quantity. Invalid fields: ${invalidFields.join(
+              ", "
+            )}`,
+          });
+        }
+
+        await product.update({ quantity: req.body.quantity });
+        return res.status(200).json({
+          message: "Quantity has been updated successfully",
+          product,
+        });
       }
 
       await product.update(req.body);
@@ -100,12 +130,13 @@ app.put(
   }
 );
 
-// DELETE /:productId: [Admin] Delete a product
+// [ADMIN, MANAGER] DELETE /:productId: Delete a product
 app.delete(
   "/:productId",
   limiter,
   validateId("productId"),
-  authorization(["admin"]),
+  authenticateToken(),
+  authorization(["admin", "manager"]),
   async (req, res) => {
     try {
       const productId = parseInt(req.params.productId, 10);
