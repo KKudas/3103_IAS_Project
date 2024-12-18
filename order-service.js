@@ -50,7 +50,7 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-// [CUSTOMER] POST /add: Create a new order
+// [CUSTOMER] POST /orders/add: Create a new order
 app.post(
   "/add",
   limiter,
@@ -106,15 +106,40 @@ app.post(
   }
 );
 
-// [ADMIN, SUPPORT] GET /orders/all: Get all order list
+// [ADMIN, SUPPORT] GET /all: Get all order list
 app.get(
-  "/",
+  "/all",
   limiter,
   authenticateToken(),
   authorization(["admin", "support"]),
   async (req, res) => {
     try {
       const orders = await Order.findAll();
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+);
+
+// [CUSTOMER, ADMIN, SUPPORT] GET /orders: Get all orders for a user
+app.get(
+  "/",
+  limiter,
+  authenticateToken(),
+  authorization(["customer", "admin", "support"]),
+  async (req, res) => {
+    try {
+      const orders = await Order.findAll({
+        where: {
+          user_id: req.user.id,
+        },
+      });
+
+      if (orders.length === 0) {
+        return res.status(404).json({ message: "No orders found" });
+      }
+
       res.json(orders);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -159,7 +184,7 @@ app.put(
   validateId("orderId"),
   validateOrderUpdateParams(),
   authenticateToken(),
-  authorization(["admin", "support"]),
+  authorization(["admin", "support", "manager"]),
   async (req, res) => {
     try {
       const orderId = parseInt(req.params.orderId);
@@ -182,7 +207,8 @@ app.put(
 
       if (!status || !["pending", "completed", "cancelled"].includes(status)) {
         return res.status(400).json({
-          message: "Status must be one of: 'pending', 'completed', or 'cancelled'",
+          message:
+            "Status must be one of: 'pending', 'completed', or 'cancelled'",
         });
       }
 
@@ -197,7 +223,6 @@ app.put(
     }
   }
 );
-
 
 // [ADMIN] DELETE /:orderId: Delete an order.
 app.delete(

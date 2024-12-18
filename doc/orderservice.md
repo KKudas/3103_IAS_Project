@@ -33,7 +33,7 @@
 
 2. **Get All Orders**
 
-   - **[GET]** `https://localhost:4003/orders/all`
+   - **[GET]** `https://localhost:8080/orders/all`
    - **Roles Required:** Admin, Support
    - **Response:**
 
@@ -58,30 +58,57 @@
      ]
      ```
 
-3. **Get Order Details**
+3. **Get All Order Details for a User**
+
+   - **[GET]** `https://localhost:8080/orders`
+   - **Roles Required:** Customer, Admin, Support
+   - **Response:**
+
+     ```json
+     [
+       {
+         "id": 1,
+         "user_id": 1,
+         "product_id": 1,
+         "quantity": 5,
+         "price": 100.0,
+         "total_price": 500.0
+       },
+       {
+         "id": 2,
+         "user_id": 1,
+         "product_id": 2,
+         "quantity": 10,
+         "price": 100.0,
+         "total_price": 1000.0
+       }
+     ]
+     ```
+
+4. **Get Order Details**
 
    - **[GET]** `https://localhost:4003/orders/{orderId}`
    - **Roles Required:** Customer, Admin, Support
    - **Response:**
 
-     ```json
-     {
-       "id": 1,
-       "user_id": 1,
-       "product_id": 1,
-       "quantity": 5,
-       "price": 100.0,
-       "total_price": 500.0
-     }
-     ```
+   ```json
+   {
+     "id": 1,
+     "user_id": 1,
+     "product_id": 1,
+     "quantity": 5,
+     "price": 100.0,
+     "total_price": 500.0
+   }
+   ```
 
-4. **Update Order Status**
+5. **Update Order Status**
 
    - **[PUT]** `https://localhost:4003/orders/{orderId}`
    - **Roles Required:** Admin, Support
    - **Note:**
-        - Only status can be updated
-        - pending, completed, and cancelled are accepted values
+     - Only status can be updated
+     - pending, completed, and cancelled are accepted values
    - **Request Body:**
 
      ```json
@@ -102,7 +129,7 @@
      }
      ```
 
-5. **Delete an Order**
+6. **Delete an Order**
 
    - **[DELETE]** `https://localhost:4003/orders/{orderId}`
    - **Roles Required:** Admin
