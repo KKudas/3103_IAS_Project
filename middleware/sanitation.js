@@ -58,6 +58,69 @@ const validateInventoryUpdateParams = () => {
   ];
 };
 
+// Validate Ticket parameters
+const validateTicketParams = () => {
+  return [
+    body("title")
+      .isString()
+      .withMessage("Title must be a string")
+      .notEmpty()
+      .withMessage("Title is required")
+      .trim()
+      .escape(),
+    body("description")
+      .isString()
+      .withMessage("Description must be a string")
+      .notEmpty()
+      .withMessage("Description is required")
+      .trim()
+      .escape(),
+    body("priority")
+      .isIn(["Low", "Medium", "High"])
+      .withMessage("Priority must be one of: Low, Medium, High"),
+    (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      next();
+    },
+  ];
+};
+
+// Validate Ticket update parameters
+const validateTicketUpdateParams = () => {
+  return [
+    body("title")
+      .optional()
+      .isString()
+      .withMessage("Title must be a string")
+      .trim()
+      .escape(),
+    body("description")
+      .optional()
+      .isString()
+      .withMessage("Description must be a string")
+      .trim()
+      .escape(),
+    body("status")
+      .optional()
+      .isIn(["Open", "In Progress", "Closed"])
+      .withMessage("Status must be one of: Open, In Progress, Closed"),
+    body("priority")
+      .optional()
+      .isIn(["Low", "Medium", "High"])
+      .withMessage("Priority must be one of: Low, Medium, High"),
+    (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      next();
+    },
+  ];
+};
+
 // CRM Sanitation
 const validateUserLoginParams = () => {
   return [
@@ -198,4 +261,6 @@ module.exports = {
   validateUserUpdateParams,
   validateOrderParams,
   validateOrderUpdateParams,
+  validateTicketParams,
+  validateTicketUpdateParams,
 };
