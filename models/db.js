@@ -1,7 +1,7 @@
 // Connect to the MySQL database
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("enterpriseapp", "root", "password", {
+const sequelize = new Sequelize("enterpriseapp", "root", "", {
   host: "localhost",
   dialect: "mysql",
   logging: false,

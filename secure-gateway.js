@@ -10,7 +10,7 @@ const app = express();
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "@localhost123", // database password
+  password: "", // database password
   database: "enterpriseapp", // database name
   port: 3306,
 });
