@@ -6,8 +6,11 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "bull": "^4.0.0",
+        "@bull-board/api": "^6.5.3",
+        "@bull-board/express": "^6.5.3",
+        "bull": "^4.16.4",
         "bull-board": "^1.7.2",
+        "cors": "^2.8.5",
         "express": "^4.18.2",
         "ioredis": "^5.0.0"
     }
