@@ -1,5 +1,29 @@
 ## Inventory Service
 
+### Dummy Data
+
+- **Product A**
+
+  ```json
+  {
+    "id": 1,
+    "name": "Product A",
+    "price": 100.0,
+    "quantity": 50
+  }
+  ```
+
+  - **Customer**
+
+  ```json
+  {
+    "id": 1,
+    "name": "Product B",
+    "price": 29.99,
+    "quantity": 150
+  }
+  ```
+
 ### Routes
 
 1. **Add a New Product**
