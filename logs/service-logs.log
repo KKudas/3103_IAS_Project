@@ -1,0 +1,182 @@
+2024-12-19T02:27:07.690Z [info]: Registration task added to queue for username: John
+2024-12-19T02:27:07.705Z [info]: User successfully registered: John (JohnDoe@gmail.com)
+2024-12-19T02:27:07.874Z [info]: Registration task added to queue for username: Juan
+2024-12-19T02:27:07.881Z [info]: User successfully registered: Juan (JuanTamad@gmail.com)
+2024-12-19T02:27:08.034Z [info]: Registration task added to queue for username: James
+2024-12-19T02:27:08.039Z [info]: User successfully registered: James (JamesBond@gmail.com)
+2024-12-19T02:27:08.217Z [info]: Login attempt successful for username: John
+2024-12-19T02:27:08.396Z [info]: Login attempt successful for username: Juan
+2024-12-19T02:27:08.548Z [info]: Login attempt successful for username: James
+2024-12-19T02:27:08.686Z [info]: Login attempt successful for username: admin
+2024-12-19T02:27:08.852Z [info]: Login attempt successful for username: manager
+2024-12-19T02:27:09.005Z [info]: Login attempt successful for username: support
+2024-12-19T02:27:09.099Z [info]: Admin 1 fetched all users
+2024-12-19T02:27:09.189Z [info]: User details fetched for ID: 5
+2024-12-19T02:27:09.287Z [info]: User details updated for ID: 5
+2024-12-19T02:27:09.364Z [info]: User deleted for ID: 5
+2024-12-19T02:28:19.137Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:28:19.250Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:28:19.442Z [error]: Error fetching all products: Inventory is not defined
+2024-12-19T02:28:19.444Z [error]: Error processing fetch-products job: Inventory is not defined
+2024-12-19T02:28:19.544Z [error]: Error fetching product by ID: Inventory is not defined
+2024-12-19T02:28:19.546Z [error]: Error processing fetch-product-by-id job: Inventory is not defined
+2024-12-19T02:28:19.624Z [warn]: Product not found for ID: 5
+2024-12-19T02:28:19.710Z [warn]: Product not found for deletion: ID 5
+2024-12-19T02:30:01.197Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:30:01.301Z [info]: Product successfully added: Product Y
+2024-12-19T02:30:01.482Z [error]: Error fetching all products: Inventory is not defined
+2024-12-19T02:30:01.484Z [error]: Error processing fetch-products job: Inventory is not defined
+2024-12-19T02:30:01.592Z [warn]: Product not found with ID: 5
+2024-12-19T02:30:01.652Z [warn]: Product not found for ID: 5
+2024-12-19T02:30:01.748Z [warn]: Product not found for deletion: ID 5
+2024-12-19T02:32:02.068Z [info]: Product successfully added: Product X
+2024-12-19T02:32:02.153Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:32:02.383Z [info]: Fetched all products
+2024-12-19T02:32:02.476Z [error]: Error fetching product by ID: Inventory is not defined
+2024-12-19T02:32:02.479Z [error]: Error processing fetch-product-by-id job: Inventory is not defined
+2024-12-19T02:32:02.573Z [warn]: Product not found for ID: 5
+2024-12-19T02:32:02.648Z [warn]: Product not found for deletion: ID 5
+2024-12-19T02:33:59.768Z [info]: Product successfully added: Product X
+2024-12-19T02:33:59.926Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:34:00.123Z [info]: Fetched all products
+2024-12-19T02:34:00.202Z [error]: Error fetching product by ID: Inventory is not defined
+2024-12-19T02:34:00.204Z [error]: Error processing fetch-product-by-id job: Inventory is not defined
+2024-12-19T02:34:00.279Z [warn]: Product not found for ID: 5
+2024-12-19T02:34:00.371Z [warn]: Product not found for deletion: ID 5
+2024-12-19T02:43:17.669Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:43:17.766Z [info]: Product successfully added: Product Y
+2024-12-19T02:43:17.932Z [error]: Error fetching all products: Missing process handler for job type get-all-products
+2024-12-19T02:43:18.077Z [warn]: Product not found for ID: 5
+2024-12-19T02:43:18.175Z [warn]: Product not found for deletion: ID 5
+2024-12-19T02:45:29.085Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:45:29.187Z [info]: Product successfully added: Product Y
+2024-12-19T02:45:29.542Z [warn]: Product not found for ID: 5
+2024-12-19T02:45:29.630Z [warn]: Product not found for deletion: ID 5
+2024-12-19T02:45:43.406Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:45:43.491Z [info]: Product successfully added: Product Y
+2024-12-19T02:45:43.825Z [info]: Product successfully updated: 5 by 3
+2024-12-19T02:45:43.918Z [info]: Product successfully deleted: 5
+2024-12-19T02:48:33.026Z [info]: Product successfully added: Product X
+2024-12-19T02:48:37.510Z [info]: Product successfully added: Product Y
+2024-12-19T02:50:11.021Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:13.771Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:14.774Z [info]: Product successfully added: Product X
+2024-12-19T02:50:15.670Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:17.710Z [info]: Product successfully added: Product X
+2024-12-19T02:50:28.947Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:29.904Z [info]: Product successfully added: Product X
+2024-12-19T02:50:30.853Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:31.888Z [info]: Product successfully added: Product X
+2024-12-19T02:50:43.654Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:44.888Z [info]: Product successfully added: Product X
+2024-12-19T02:50:46.195Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:47.271Z [info]: Product successfully added: Product X
+2024-12-19T02:50:48.474Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:49.494Z [info]: Product successfully added: Product X
+2024-12-19T02:50:50.726Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:51.799Z [info]: Product successfully added: Product X
+2024-12-19T02:50:53.075Z [error]: Error adding product: Inventory is not defined
+2024-12-19T02:50:54.201Z [info]: Product successfully added: Product X
+2024-12-19T02:53:02.423Z [info]: Product successfully added: Product X
+2024-12-19T02:53:05.885Z [info]: Product successfully added: Product Y
+2024-12-19T02:53:12.110Z [error]: Error fetching all products: Missing process handler for job type get-all-products
+2024-12-19T02:55:30.618Z [info]: Product successfully updated: 5 by 3
+2024-12-19T02:55:38.647Z [info]: Product successfully deleted: 5
+2024-12-19T03:04:23.255Z [info]: Ticket creation task added to queue for user ID: 6
+2024-12-19T03:04:23.277Z [info]: Ticket successfully created: Cannot access account by user ID: 6
+2024-12-19T03:18:35.335Z [info]: Ticket creation task added to queue for user ID: 6
+2024-12-19T03:18:35.347Z [info]: Ticket successfully created: Cannot access account by user ID: 6
+2024-12-19T03:18:38.752Z [info]: Admin user 1 fetching all tickets
+2024-12-19T03:18:43.021Z [info]: Customer user 6 fetching their tickets
+2024-12-19T03:18:46.887Z [info]: Ticket fetched successfully: 3
+2024-12-19T03:18:50.238Z [info]: Ticket updated successfully: 3
+2024-12-19T03:18:54.319Z [info]: Ticket successfully deleted: ID 3
+2024-12-19T03:21:32.521Z [info]: Product successfully added: Product X
+2024-12-19T03:21:39.478Z [info]: Product successfully added: Product Y
+2024-12-19T03:21:46.699Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:21:46.706Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:22:27.291Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:22:27.298Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:23:14.880Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:23:14.887Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:24:51.823Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:24:51.905Z [warn]: 6 Updates Product Quantity after order
+2024-12-19T03:24:51.911Z [info]: Quantity has been updated after order for product: 1
+2024-12-19T03:24:51.912Z [info]: Order successfully created for user ID: 6
+2024-12-19T03:25:01.030Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:01.033Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:25:02.758Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:02.762Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:25:03.859Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:03.862Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:25:04.804Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:04.868Z [warn]: 6 Updates Product Quantity after order
+2024-12-19T03:25:04.873Z [info]: Quantity has been updated after order for product: 1
+2024-12-19T03:25:04.876Z [info]: Order successfully created for user ID: 6
+2024-12-19T03:25:05.840Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:05.844Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:25:16.232Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:16.240Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:25:17.185Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:17.189Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:25:18.084Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:18.153Z [warn]: 6 Updates Product Quantity after order
+2024-12-19T03:25:18.157Z [info]: Quantity has been updated after order for product: 1
+2024-12-19T03:25:18.159Z [info]: Order successfully created for user ID: 6
+2024-12-19T03:25:18.954Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:25:18.958Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:30:34.044Z [info]: Registration task added to queue for username: John
+2024-12-19T03:30:34.066Z [info]: User successfully registered: John (JohnDoe@gmail.com)
+2024-12-19T03:30:34.162Z [warn]: Registration failed: Username or email already exists - Juan, JuanTamad@gmail.com
+2024-12-19T03:30:34.232Z [warn]: Registration failed: Username or email already exists - James, JamesBond@gmail.com
+2024-12-19T03:30:34.384Z [info]: Login attempt successful for username: John
+2024-12-19T03:30:34.571Z [info]: Login attempt successful for username: Juan
+2024-12-19T03:30:34.727Z [info]: Login attempt successful for username: James
+2024-12-19T03:30:34.914Z [info]: Login attempt successful for username: admin
+2024-12-19T03:30:35.085Z [info]: Login attempt successful for username: manager
+2024-12-19T03:30:35.288Z [info]: Login attempt successful for username: support
+2024-12-19T03:30:35.380Z [info]: Admin 1 fetched all users
+2024-12-19T03:30:35.457Z [warn]: User not found for ID: 5
+2024-12-19T03:30:35.548Z [warn]: User not found for ID: 5
+2024-12-19T03:30:35.633Z [warn]: User not found for deletion: ID 5
+2024-12-19T03:30:49.190Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:30:49.196Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:32:50.850Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:32:50.858Z [error]: Error processing order creation job: Missing process handler for job type create-order
+2024-12-19T03:35:30.559Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:35:30.568Z [error]: Error processing order creation job: Missing process handler for job type add-order
+2024-12-19T03:36:09.126Z [info]: Order creation task added to queue for user ID: 6
+2024-12-19T03:36:09.136Z [error]: Error processing order creation job: Missing process handler for job type add-order
+2024-12-19T03:46:11.256Z [warn]: Registration failed: Username or email already exists - John, JohnDoe@gmail.com
+2024-12-19T03:46:11.328Z [warn]: Registration failed: Username or email already exists - Juan, JuanTamad@gmail.com
+2024-12-19T03:46:11.417Z [warn]: Registration failed: Username or email already exists - James, JamesBond@gmail.com
+2024-12-19T03:46:11.596Z [info]: Login attempt successful for username: John
+2024-12-19T03:46:11.798Z [info]: Login attempt successful for username: Juan
+2024-12-19T03:46:12.010Z [info]: Login attempt successful for username: James
+2024-12-19T03:46:12.194Z [info]: Login attempt successful for username: admin
+2024-12-19T03:46:12.344Z [info]: Login attempt successful for username: manager
+2024-12-19T03:46:12.507Z [info]: Login attempt successful for username: support
+2024-12-19T03:46:12.590Z [info]: Admin 1 fetched all users
+2024-12-19T03:46:12.650Z [warn]: User not found for ID: 5
+2024-12-19T03:46:12.711Z [warn]: User not found for ID: 5
+2024-12-19T03:46:12.821Z [warn]: User not found for deletion: ID 5
+2024-12-19T03:46:36.534Z [info]: Product successfully added: Product X
+2024-12-19T03:46:43.934Z [info]: Product successfully added: Product Y
+2024-12-19T03:47:24.706Z [info]: Product successfully updated: 3 by 3
+2024-12-19T03:47:30.445Z [info]: Product successfully deleted: 3
+2024-12-19T03:47:48.982Z [warn]: 6 Updates Product Quantity after order
+2024-12-19T03:47:48.985Z [info]: Quantity has been updated after order for product: 1
+2024-12-19T03:47:48.987Z [info]: Order successfully placed for user ID: 6
+2024-12-19T03:47:52.276Z [warn]: 6 Updates Product Quantity after order
+2024-12-19T03:47:52.281Z [info]: Quantity has been updated after order for product: 2
+2024-12-19T03:47:52.283Z [info]: Order successfully placed for user ID: 6
+2024-12-19T03:47:55.115Z [warn]: 7 Updates Product Quantity after order
+2024-12-19T03:47:55.119Z [info]: Quantity has been updated after order for product: 1
+2024-12-19T03:47:55.120Z [info]: Order successfully placed for user ID: 7
+2024-12-19T03:48:04.356Z [info]: Admin/Suport user ID: 1 fetched all orders
+2024-12-19T03:48:07.237Z [info]: User ID: 6 fetched all orders
+2024-12-19T03:48:09.868Z [info]: Order fetched successfully: 1
+2024-12-19T03:48:12.758Z [info]: Order status updated for order ID: 1
+2024-12-19T03:48:15.409Z [info]: Order successfully deleted: ID 1
+2024-12-19T03:48:15.409Z [error]: Error deleting order: order.destroy is not a function
+2024-12-19T03:49:35.529Z [info]: Order successfully deleted: ID 1

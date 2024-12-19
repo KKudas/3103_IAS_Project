@@ -26,6 +26,10 @@ const {
 } = require("./middleware/sanitation.js");
 const limiter = require("./middleware/limiter.js");
 const path = require("path");
+const queue = require("./logs/queue.js");
+require("./middleware/service-queue.js");
+const { logger } = require("./logs/logs.js");
+const { log } = require("console");
 
 // Load SSL certificates
 const options = {
@@ -80,10 +84,17 @@ passport.use(
             email: profile.emails?.[0]?.value || null,
             role: "customer", // default role
           });
+
+          logger.info(
+            `; New user created with Github Provider: ${profile.username}`
+          );
         }
+
+        logger.info(`User logged in with Github Provider: ${profile.username}`);
 
         return done(null, user);
       } catch (error) {
+        logger.error(`Error logging in with Github Provider: ${error.message}`);
         return done(error);
       }
     }
@@ -108,6 +119,7 @@ app.get(
       });
     } catch (error) {
       console.error("Error generating token:", error);
+      logger.error(`Error generating token: ${error.message}`);
       res.status(500).json({ error: "Failed to generate token" });
     }
   }
@@ -125,6 +137,9 @@ app.post("/register", limiter, validateUserParams(), async (req, res) => {
     });
 
     if (existingUser) {
+      logger.warn(
+        `Registration failed: Username or email already exists - ${username}, ${email}`
+      );
       return res
         .status(409)
         .json({ error: "Username or email already exists" });
@@ -132,16 +147,37 @@ app.post("/register", limiter, validateUserParams(), async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
-      github_id: null,
-      username,
-      email,
-      password: hashedPassword,
-      role: role || "customer",
-    });
+    const job = await queue.add(
+      "register-user",
+      {
+        username,
+        email,
+        password: hashedPassword,
+        role: role || "customer",
+      },
+      {
+        limiter: {
+          max: 5,
+          duration: 500,
+        },
+      }
+    );
 
-    res.status(201).json({ message: "User successfully registered", user });
+    logger.info(`Registration task added to queue for username: ${username}`);
+
+    job
+      .finished()
+      .then((user) => {
+        res.status(201).json({ message: "User successfully registered", user });
+      })
+      .catch((error) => {
+        logger.error(`Error processing registration job: ${error.message}`);
+        res
+          .status(500)
+          .json({ error: "Error registering user", details: error.message });
+      });
   } catch (error) {
+    logger.error(`Error registering user: ${error.message}`);
     res.status(500).json({ error: "Error registering user" });
   }
 });
@@ -158,17 +194,40 @@ app.post("/login", limiter, validateUserLoginParams(), async (req, res) => {
     });
 
     if (!user) {
+      logger.warn(`Login Attempt failed: Wrong username or password`);
+
+      // Add login attempt to the queue
+      await queue.add("login-attempt", {
+        username: username,
+        success: false,
+      });
+
       return res.status(401).send("Wrong username or password");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
+      logger.warn(`Login Attempt failed: Wrong username or password`);
+
+      await queue.add("login-attempt", {
+        username: username,
+        success: false,
+      });
+
       return res.status(401).send("Wrong username or password");
     }
 
     const token = generateToken(user);
+
+    await queue.add("login-attempt", {
+      username: user.username,
+      success: true,
+    });
+
     res.json({ id: user.id, message: "User successfully logged in", token });
   } catch (error) {
+    logger.error(`Error logging in: ${error.message}`);
     res.status(500).json({ error: "There was an error logging in" });
   }
 });
@@ -183,7 +242,9 @@ app.get(
     try {
       const users = await User.findAll();
       res.json(users);
+      logger.info(`Admin ${req.user.id} fetched all users`);
     } catch (error) {
+      logger.error(`Error fetching users: ${error.message}`);
       res.status(500).json({ error: "There was an error fetching the users" });
     }
   }
@@ -201,6 +262,7 @@ app.get(
       const user = await User.findByPk(userId);
 
       if (!user) {
+        logger.warn(`User not found for ID: ${userId}`);
         return res.status(404).json({ message: "User not found" });
       }
 
@@ -210,10 +272,12 @@ app.get(
         req.user.role === "admin"
       ) {
         res.json(user);
+        logger.info(`User details fetched for ID: ${userId}`);
       } else {
         res.status(403).json({ message: "Unauthorized Access" });
       }
     } catch (error) {
+      logger.error(`Error fetching user: ${error.message}`);
       res.status(500).json({ error: "There was an error fetching the user" });
     }
   }
@@ -232,14 +296,17 @@ app.put(
       const user = await User.findByPk(userId);
 
       if (!user) {
+        logger.warn(`User not found for ID: ${userId}`);
         return res.status(404).json({ message: "User not found" });
       }
 
       if (req.body.github_id) {
+        logger.warn(`Update attempt failed: Cannot update github_id`);
         return res.status(400).json({ error: "Cannot update github_id" });
       }
 
       if (req.body.role && req.user.role !== "admin") {
+        logger.warn(`Update attempt failed: Admin can only update roles`);
         return res.status(403).json({ message: "Admin can only update roles" });
       }
 
@@ -250,10 +317,13 @@ app.put(
       ) {
         await user.update(req.body);
         res.status(200).json({ message: "User successfully updated", user });
+
+        logger.info(`User details updated for ID: ${userId}`);
       } else {
         res.status(403).json({ message: "Unauthorized Access" });
       }
     } catch (error) {
+      logger.error(`Error updating user: ${error.message}`);
       res.status(500).json({ error: "There was an error updating the user" });
     }
   }
@@ -271,6 +341,7 @@ app.delete(
       const user = await User.findByPk(userId);
 
       if (!user) {
+        logger.warn(`User not found for deletion: ID ${userId}`);
         return res.status(404).json({ message: "User not found" });
       }
 
@@ -281,10 +352,12 @@ app.delete(
       ) {
         await user.destroy();
         res.status(200).json({ message: "User successfully deleted" });
+        logger.info(`User deleted for ID: ${userId}`);
       } else {
         res.status(403).json({ message: "Unauthorized Access" });
       }
     } catch (error) {
+      logger.error
       res.status(500).json({ error: "There was an error deleting the user" });
     }
   }

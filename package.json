@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
-    "bull": "^4.16.4",
+    "bull": "^4.16.5",
     "bull-board": "^1.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -21,11 +21,13 @@
     "express-validator": "^7.2.0",
     "http-proxy-middleware": "^3.0.3",
     "https": "^1.0.0",
+    "ioredis": "^5.4.1",
     "mysql2": "^3.11.5",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "redis": "^4.7.0",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "winston": "^3.17.0"
   },
   "description": ""
 }
