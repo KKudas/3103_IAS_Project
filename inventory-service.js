@@ -16,6 +16,9 @@ const {
   validateInventoryUpdateParams,
 } = require("./middleware/sanitation.js");
 const limiter = require("./middleware/limiter.js");
+const queue = require("./logs/queue.js");
+require("./middleware/service-queue.js");
+const { logger } = require("./logs/logs.js");
 
 // Load SSL certificates
 const options = {
@@ -36,14 +39,25 @@ app.post(
   validateInventoryParams(),
   async (req, res) => {
     try {
-      const data = await Inventory.create({
+      const job = await queue.add("add-product", {
         name: req.body.name,
         price: req.body.price,
         quantity: req.body.quantity,
       });
 
-      res.status(201).json({ message: "Product successfully added", data });
+      job
+        .finished()
+        .then((data) => {
+          res.status(201).json({ message: "Product successfully added", data });
+        })
+        .catch((error) => {
+          res.status(500).json({
+            error: "Error processing new product",
+            details: error.message,
+          });
+        });
     } catch (error) {
+      logger.warn(`Error adding new product: ${error.message}`);
       res
         .status(500)
         .json({ error: "There was an error adding a new product" });
@@ -91,10 +105,12 @@ app.put(
       const product = await Inventory.findByPk(productId);
 
       if (!product) {
+        logger.warn(`Product not found for ID: ${productId}`);
         return res.status(404).json({ message: "Product not found" });
       }
 
       if (req.user.role === "customer") {
+        logger.warn(`${req.user.id} Updates Product Quantity after order`);
         if (!req.body.quantity) {
           return res
             .status(400)
@@ -105,6 +121,7 @@ app.put(
           (field) => field !== "quantity"
         );
         if (invalidFields.length > 0) {
+          logger.warn(`${req.user.id} attempted to update invalid fields`);
           return res.status(400).json({
             message: `Customers are only allowed to update the quantity. Invalid fields: ${invalidFields.join(
               ", "
@@ -113,6 +130,11 @@ app.put(
         }
 
         await product.update({ quantity: req.body.quantity });
+
+        logger.info(
+          `Quantity has been updated after order for product: ${productId}`
+        );
+
         return res.status(200).json({
           message: "Quantity has been updated successfully",
           product,
@@ -124,7 +146,12 @@ app.put(
         message: "Product successfully updated",
         product,
       });
+
+      logger.info(
+        `Product successfully updated: ${productId} by ${req.user.id}`
+      );
     } catch (error) {
+      logger.error(`Error updating product: ${error.message}`);
       res.status(500).json({ message: error.message });
     }
   }
@@ -143,12 +170,16 @@ app.delete(
       const product = await Inventory.findByPk(productId);
 
       if (!product) {
+        logger.warn(`Product not found for deletion: ID ${productId}`);
         return res.status(404).json({ message: "Product not found" });
       }
 
       await product.destroy();
       res.status(200).json({ message: "Product successfully deleted" });
+
+      logger.info(`Product successfully deleted: ${productId}`);
     } catch (error) {
+      logger.error(`Error deleting product: ${error.message}`);
       res
         .status(500)
         .json({ error: "There was an error deleting the product" });

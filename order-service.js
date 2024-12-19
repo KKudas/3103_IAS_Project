@@ -23,6 +23,9 @@ const {
 } = require("./middleware/sanitation.js");
 const limiter = require("./middleware/limiter.js");
 const path = require("path");
+const queue = require("./logs/queue.js");
+require("./middleware/service-queue.js");
+const { logger } = require("./logs/logs.js");
 
 // Load SSL certificates
 const options = {
@@ -70,6 +73,9 @@ app.post(
       );
 
       if (quantity > productReq.data.quantity) {
+        logger.warn(
+          `Insufficient stock. Only ${productReq.data.quantity} units are available. User attempted to order ${quantity} units for product ID: ${product_id}`
+        );
         return res.status(400).json({
           message: `Insufficient stock. Only ${productReq.data.quantity} units are available.`,
         });
@@ -99,8 +105,11 @@ app.post(
         }
       );
 
+      logger.info(`Order successfully placed for user ID: ${req.user.id}`);
+
       res.json({ message: "Oder successfully placed", data });
     } catch (error) {
+      logger.error(`Error placing order: ${error.message}`);
       res.status(500).json({ message: error.message });
     }
   }
@@ -114,6 +123,7 @@ app.get(
   authorization(["admin", "support"]),
   async (req, res) => {
     try {
+      logger.info(`Admin/Suport user ID: ${req.user.id} fetched all orders`);
       const orders = await Order.findAll();
       res.json(orders);
     } catch (error) {
@@ -137,11 +147,14 @@ app.get(
       });
 
       if (orders.length === 0) {
+        logger.warn(`No orders found for user ID: ${req.user.id}`);
         return res.status(404).json({ message: "No orders found" });
       }
 
+      logger.info(`User ID: ${req.user.id} fetched all orders`);
       res.json(orders);
     } catch (error) {
+      logger.error(`Error fetching orders: ${error.message}`);
       res.status(500).json({ message: error.message });
     }
   }
@@ -159,6 +172,7 @@ app.get(
       const order = await Order.findByPk(orderId);
 
       if (!order) {
+        logger.warn(`Order not found for ID: ${orderId}`);
         return res.status(404).json({ message: "Order not found" });
       }
 
@@ -167,11 +181,16 @@ app.get(
         req.user.role === "admin" ||
         req.user.role === "support"
       ) {
+        logger.warn(
+          `Unauthorized access. User ID: ${req.user.id} attempted to access order ID: ${orderId}`
+        );
         return res.status(403).json({ message: "Unauthorized Access" });
       }
 
+      logger.info(`Order fetched successfully: ${orderId}`);
       res.json(order);
     } catch (error) {
+      logger.error(`Error fetching order: ${error.message}`);
       res.status(500).json({ message: error.message });
     }
   }
@@ -191,6 +210,7 @@ app.put(
       const order = await Order.findByPk(orderId);
 
       if (!order) {
+        logger.warn(`Order not found for ID: ${orderId}`);
         return res.status(404).json({ message: "Order not found" });
       }
 
@@ -200,18 +220,23 @@ app.put(
       );
 
       if (invalidFields.length > 0) {
+        logger.warn(`Invalid fields detected: ${invalidFields.join(", ")}`);
         return res.status(400).json({
           message: `Invalid fields detected: ${invalidFields.join(", ")}`,
         });
       }
 
       if (!status || !["pending", "completed", "cancelled"].includes(status)) {
+        logger.warn(
+          `Invalid status: ${status}. Must be one of: 'pending', 'completed', or 'cancelled'`
+        );
         return res.status(400).json({
           message:
             "Status must be one of: 'pending', 'completed', or 'cancelled'",
         });
       }
 
+      logger.info(`Order status updated for order ID: ${orderId}`);
       await order.update({ status });
 
       res.status(200).json({
@@ -219,6 +244,7 @@ app.put(
         data: order,
       });
     } catch (error) {
+      logger.error(`Error updating order: ${error.message}`);
       res.status(500).json({ message: error.message });
     }
   }
@@ -233,14 +259,18 @@ app.delete(
   async (req, res) => {
     try {
       const orderId = parseInt(req.params.orderId);
-      const order = Order.findByPk(orderId);
+      const order = await Order.findByPk(orderId);
 
       if (!order) {
+        logger.warn(`Order not found for deletion: ID ${orderId}`);
         return res.status(404).json({ message: "Order not found" });
       }
 
+      logger.info(`Order successfully deleted: ID ${orderId}`);
       await order.destroy();
+      res.status(200).json({ message: "Order successfully deleted" });
     } catch (error) {
+      logger.error(`Error deleting order: ${error.message}`);
       res.status(500).json({ message: error.message });
     }
   }
