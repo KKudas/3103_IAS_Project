@@ -42,13 +42,15 @@ This document provides detailed descriptions of the API routes available for the
    cd 3103_SIA_Project
    ```
 
-3. Install Node.js dependencies
+3. Place the .env file from the drive folder provided
+
+4. Install Node.js dependencies
 
    ```
    npm install
    ```
 
-4. Set up the MySQL schema
+5. Set up the MySQL schema
 
    Before running the services, you need to set up a MySQL schema. Open MySQL Workbench (or your preferred MySQL client) and run the following query:
 
@@ -58,11 +60,11 @@ This document provides detailed descriptions of the API routes available for the
 
    The `enterpriseapp` schema will store the necessary database for your services.
 
-5. Configure the secure-gateway.js file
+7. Configure the secure-gateway.js file
 
    In the project folder, navigate to the secure-gateway.js file. Open it and replace the default password with the password used by your system. Find the line where the MySQL password is set and change it accordingly.
 
-6. Start the Docker containers
+8. Start the Docker containers
 
    ```
    cd logs
@@ -71,7 +73,7 @@ This document provides detailed descriptions of the API routes available for the
    docker-compose up -d
    ```
 
-7. Return to root folder run each APIs on different terminals
+9. Return to root folder run each APIs on different terminals
 
    ```
    node secure-gateway.js
